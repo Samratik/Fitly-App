@@ -69,6 +69,4 @@ dependencies {
 
     implementation("com.google.mlkit:pose-detection:17.0.0")
 
-
-
 }
