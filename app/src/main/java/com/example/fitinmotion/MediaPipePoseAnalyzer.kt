@@ -44,7 +44,6 @@ class MediaPipePoseAnalyzer(
         val bitmap = imageProxy.toBitmap().rotate(imageProxy.imageInfo.rotationDegrees)
         val mpImage: MPImage = BitmapImageBuilder(bitmap).build()
 
-        // ✅ В VIDEO-режиме вызываем detectForVideo с timestamp
         val ts = android.os.SystemClock.uptimeMillis()
         val result: PoseLandmarkerResult = landmarker.detectForVideo(mpImage, ts)
 
@@ -60,8 +59,6 @@ class MediaPipePoseAnalyzer(
         imageProxy.close()
     }
 }
-
-/* ---------- helpers ---------- */
 
 private fun ImageProxy.toBitmap(): Bitmap {
     val yBuffer = planes[0].buffer

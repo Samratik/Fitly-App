@@ -4,10 +4,6 @@ import android.graphics.PointF
 import com.example.fitinmotion.Angles
 import com.example.fitinmotion.PoseIdx
 
-/**
- * Принимает landmarks из MediaPipe в виде Map<index, PointF>.
- * Координаты в пикселях overlay (или нормализованные 0..1 — углам все равно).
- */
 class PushUpCounterMP(
     private val downThresh: Float = 75f,   // низ: локоть ≤ 75°
     private val upThresh: Float = 165f,    // верх: локоть ≥ 165°
@@ -20,7 +16,6 @@ class PushUpCounterMP(
     private var stable = 0
     private var lastLandmarks: Map<Int, PointF>? = null
 
-    /** Обновляем счётчик новым набором точек */
     fun onLandmarks(lm: Map<Int, PointF>) {
         val used = if (lm.isNotEmpty()) { lastLandmarks = lm; lm }
         else lastLandmarks ?: return

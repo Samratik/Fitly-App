@@ -76,9 +76,6 @@ private fun CameraWithPose(modifier: Modifier = Modifier) {
     val overlayView = remember { PoseOverlayView(context) }
     var viewSize by remember { mutableStateOf(Size(1, 1)) }
 
-//    val counter = remember { PushUpCounter() }
-//    var reps by remember { mutableStateOf(0) }
-
     val counter = remember { PushUpCounterMP() }
     var reps by remember { mutableStateOf(0) }
 

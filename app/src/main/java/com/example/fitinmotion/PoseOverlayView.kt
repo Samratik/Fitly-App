@@ -26,7 +26,6 @@ class PoseOverlayView @JvmOverloads constructor(
     @Volatile
     private var points: Map<Int, PointF> = emptyMap()
 
-    /** Обновляем карту landmark’ов (индекс BlazePose -> координата в пикселях overlay) */
     fun updateLandmarks(map: Map<Int, PointF>) {
         points = map
         postInvalidateOnAnimation()
