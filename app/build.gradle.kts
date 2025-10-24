@@ -57,6 +57,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    // MediaPipe Tasks – Vision (Pose)
+    implementation("com.google.mediapipe:tasks-vision:0.20230731")
+
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.8.3")
 
@@ -67,6 +70,7 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:$camerax")
     implementation("androidx.camera:camera-view:$camerax")
 
-    implementation("com.google.mlkit:pose-detection:17.0.0")
+//    implementation("com.google.mlkit:pose-detection:17.0.0")
+//    implementation("com.google.mlkit:pose-detection-accurate:17.0.0")
 
 }

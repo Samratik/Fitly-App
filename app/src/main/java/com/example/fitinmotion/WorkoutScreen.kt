@@ -22,8 +22,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import com.example.fitinmotion.PoseAnalyzer
 import com.example.fitinmotion.PoseOverlayView
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.fitinmotion.PushUpCounterMP
 
 private const val TAG = "FitInMotion"
 
@@ -71,6 +76,12 @@ private fun CameraWithPose(modifier: Modifier = Modifier) {
     val overlayView = remember { PoseOverlayView(context) }
     var viewSize by remember { mutableStateOf(Size(1, 1)) }
 
+//    val counter = remember { PushUpCounter() }
+//    var reps by remember { mutableStateOf(0) }
+
+    val counter = remember { PushUpCounterMP() }
+    var reps by remember { mutableStateOf(0) }
+
     // узнаём размер overlay для корректной проекции
     DisposableEffect(Unit) {
         val vto = overlayView.viewTreeObserver
@@ -92,18 +103,19 @@ private fun CameraWithPose(modifier: Modifier = Modifier) {
                 it.setSurfaceProvider(previewView.surfaceProvider)
             }
 
-            val analyzer = PoseAnalyzer(
+            val analyzer = MediaPipePoseAnalyzer(
+                context = context,
                 viewSizeProvider = { viewSize }
-            ) { _, projected ->
+            ) { landmarksMap ->
                 val w = viewSize.width.toFloat()
-                // зеркалим точки по горизонтали
-                val mirrored = projected.mapValues { (_, p) ->
-                    android.graphics.PointF(w - p.x, p.y)
-                }
+                val mirrored = landmarksMap.mapValues { (_, p) -> android.graphics.PointF(w - p.x, p.y) } // фронталка
                 overlayView.updateLandmarks(mirrored)
+                counter.onLandmarks(mirrored)
+                reps = counter.reps
             }
 
             val analysis = ImageAnalysis.Builder()
+                .setTargetResolution(Size(960, 540))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also { it.setAnalyzer(executor, analyzer) }
@@ -127,8 +139,27 @@ private fun CameraWithPose(modifier: Modifier = Modifier) {
         }
     }
 
-    Box(modifier = modifier) {
+    Box(modifier) {
         AndroidView(factory = { previewView }, modifier = Modifier.fillMaxSize())
         AndroidView(factory = { overlayView }, modifier = Modifier.fillMaxSize())
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Surface(
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                shape = MaterialTheme.shapes.large
+            ) {
+                Text(
+                    text = "Reps: $reps",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                    fontSize = 28.sp
+                )
+            }
+        }
     }
 }
